@@ -10,8 +10,8 @@ namespace netSchematron
         FOR = 2,
         [Lexeme(GenericToken.KeyWord, "let")]
         LET = 2,
-        [Lexeme(GenericToken.KeyWord, "every")]
         [Lexeme(GenericToken.KeyWord, "some")]
+        [Lexeme(GenericToken.KeyWord, "every")]
         SOMEEVERY = 2,
         [Lexeme(GenericToken.KeyWord, "if")]
         IF = 2,
@@ -19,6 +19,24 @@ namespace netSchematron
         OR = 3,
         [Lexeme(GenericToken.KeyWord, "and")]
         AND = 4,
+        [Lexeme(GenericToken.KeyWord, "eq")]
+        [Lexeme(GenericToken.KeyWord, "ne")]
+        [Lexeme(GenericToken.KeyWord, "lt")]
+        [Lexeme(GenericToken.KeyWord, "le")]
+        [Lexeme(GenericToken.KeyWord, "gt")]
+        [Lexeme(GenericToken.KeyWord, "ge")]
+        VCOMP = 5,
+        [Lexeme(GenericToken.SugarToken, "=")]
+        [Lexeme(GenericToken.SugarToken, "!=")]
+        [Lexeme(GenericToken.SugarToken, "<")]
+        [Lexeme(GenericToken.SugarToken, "<=")]
+        [Lexeme(GenericToken.SugarToken, ">")]
+        [Lexeme(GenericToken.SugarToken, ">=")]
+        GCOMP = 5,
+        [Lexeme(GenericToken.KeyWord, "is")]
+        [Lexeme(GenericToken.SugarToken, "<<")]
+        [Lexeme(GenericToken.SugarToken, ">>")]
+        NCOMP = 5,
         [Lexeme(GenericToken.SugarToken, "||")]
         CONCAT = 6,
         [Lexeme(GenericToken.KeyWord, "to")]
@@ -34,134 +52,55 @@ namespace netSchematron
         [Lexeme(GenericToken.SugarToken, "|")]
         [Lexeme(GenericToken.KeyWord, "union")]
         UNION = 10,
-        [Lexeme("[^{}]*")]
-        BRACEDURILITERAL,
-        [Lexeme(".*")]
-        NCNAME,
-        EOF,
-
-        // [Lexeme(GenericToken.SugarToken, ",")]
-        // COMMA,
-        // [Lexeme(GenericToken.SugarToken, "$")]
-        // DOLAR,
-        // [Lexeme(GenericToken.KeyWord, "for")]
-        // FOR,
-        // [Lexeme(GenericToken.KeyWord, "let")]
-        // LET,
-        // [Lexeme(GenericToken.KeyWord, "some")]
-        // SOME,
-        // [Lexeme(GenericToken.KeyWord, "every")]
-        // EVERY,
-        // [Lexeme(GenericToken.KeyWord, "return")]
-        // RETURN,
-        // [Lexeme(GenericToken.KeyWord, "satisfies")]
-        // SATISFIES,
-        // [Lexeme(GenericToken.KeyWord, "if")]
-        // IF,
-        // [Lexeme(GenericToken.KeyWord, "else")]
-        // ELSE,
-        // [Lexeme(GenericToken.KeyWord, "THEN")]
-        // THEN,
-        // [Lexeme(GenericToken.KeyWord, "or")]
-        // OR,
-        // [Lexeme(GenericToken.KeyWord, "and")]
-        // AND,
-        // [Lexeme(GenericToken.SugarToken, "=")]
-        // [Lexeme(GenericToken.KeyWord, "eq")]
-        // EQUAL,
-        // [Lexeme(GenericToken.SugarToken, "!=")]
-        // [Lexeme(GenericToken.KeyWord, "ne")]
-        // NOTEQUAL,
-        // [Lexeme(GenericToken.SugarToken, "<")]
-        // [Lexeme(GenericToken.KeyWord, "lt")]
-        // LESSTHAN,
-        // [Lexeme(GenericToken.SugarToken, "<=")]
-        // [Lexeme(GenericToken.KeyWord, "le")]
-        // LESSTHANOREQUAL,
-        // [Lexeme(GenericToken.SugarToken, ">")]
-        // [Lexeme(GenericToken.KeyWord, "gt")]
-        // GREATERTHAN,
-        // [Lexeme(GenericToken.SugarToken, ">=")]
-        // [Lexeme(GenericToken.KeyWord, "ge")]
-        // GREATERTHANOREQUAL,
-        // [Lexeme(GenericToken.KeyWord, "is")]
-        // IS,
-        // [Lexeme(GenericToken.KeyWord, "in")]
-        // IN,
-        // [Lexeme(GenericToken.SugarToken, ":=")]
-        // ASSIGN,
-        // [Lexeme(GenericToken.SugarToken, "<<")]
-        // LEFTSHIFT,
-        // [Lexeme(GenericToken.SugarToken, ">>")]
-        // RIGHTSHFIT,
-        // [Lexeme(GenericToken.SugarToken, "||")]
-        // CONCAT,
-        // [Lexeme(GenericToken.KeyWord, "to")]
-        // TO,
-        // [Lexeme(GenericToken.SugarToken, "+")]
-        // BPLUS,
-        // [Lexeme(GenericToken.SugarToken, "-")]
-        // BMINUS,
-        // [Lexeme(GenericToken.SugarToken, "*")]
-        // TIMES,
-        // [Lexeme(GenericToken.KeyWord, "div")]
-        // DIVIDE,
-        // [Lexeme(GenericToken.KeyWord, "idiv")]
-        // IDIVIDE,
-        // [Lexeme(GenericToken.KeyWord, "mod")]
-        // MOD,
-        // [Lexeme(GenericToken.SugarToken, "|")]
-        // [Lexeme(GenericToken.KeyWord, "union")]
-        // UNION,
-        // [Lexeme(GenericToken.KeyWord, "intersect")]
-        // INTERSECT,
-        // [Lexeme(GenericToken.KeyWord, "except")]
-        // EXCEPT,
-        // [Lexeme(GenericToken.KeyWord, "instance of")] // ayırmak gerekebilir
-        // INSTANCEOF,
-        // [Lexeme(GenericToken.KeyWord, "treat")] // ayırmak gerekebilir
-        // TREAT,
-        // [Lexeme(GenericToken.KeyWord, "castable")] // ayırmak gerekebilir
-        // CASTABLE,
-        // [Lexeme(GenericToken.KeyWord, "cast")] // ayırmak gerekebilir
-        // CAST,
-        // [Lexeme(GenericToken.KeyWord, "as")] // ayırmak gerekebilir
-        // AS,
-        // [Lexeme(GenericToken.SugarToken, "=>")]
-        // ARROW,
-        // [Lexeme(GenericToken.SugarToken, ":")]
-        // COLON,
-        // [Lexeme(GenericToken.SugarToken, ";")]
-        // SEMICOLON,
-        // [Lexeme(GenericToken.SugarToken, "+")]
-        // UPLUS,
-        // [Lexeme(GenericToken.SugarToken, "-")]
-        // UMINUS,
-        // [Lexeme(GenericToken.SugarToken, "!")]
-        // MAP,
-        // [Lexeme(GenericToken.SugarToken, "/")]
-        // DASH,
-        // [Lexeme(GenericToken.SugarToken, "//")]
-        // DOUBLEDASH,
-        // [Lexeme(GenericToken.SugarToken, "[")]
-        // LPREDICATE,
-        // [Lexeme(GenericToken.SugarToken, "]")]
-        // RPREDICATE,
-        // [Lexeme(GenericToken.SugarToken, "?")]
-        // PLOOKUP,
-        // [Lexeme(GenericToken.SugarToken, "?")]
-        // ULOOKUP,
-        // [Lexeme(GenericToken.SugarToken, "(")]
-        // LPARANTHESIS,
-        // [Lexeme(GenericToken.SugarToken, ")")]
-        // RPARANTHESIS,
-        // [Lexeme(GenericToken.SugarToken, "{")]
-        // LCURLY,
-        // [Lexeme(GenericToken.SugarToken, "}")]
-        // RCURLY,
-        // [Lexeme(GenericToken.SugarToken, "\"")]
-        // DOUBLEQUOTE,
-        // [Lexeme(GenericToken.SugarToken, "'")]
-        // SINGLEQUOTE
+        [Lexeme(GenericToken.KeyWord, "intersect")]
+        [Lexeme(GenericToken.KeyWord, "except")]
+        INTERSECTEXCEPT = 11,
+        [Lexeme(GenericToken.KeyWord, "instance")]
+        INSTANCE = 12,
+        [Lexeme(GenericToken.KeyWord, "treat")]
+        TREAT = 13,
+        [Lexeme(GenericToken.KeyWord, "castable")]
+        CASTABLE = 14,
+        [Lexeme(GenericToken.KeyWord, "cast")]
+        CAST = 15,
+        [Lexeme(GenericToken.SugarToken, "=>")]
+        ARROW = 16,
+        [Lexeme(GenericToken.SugarToken, "+")]
+        [Lexeme(GenericToken.SugarToken, "-")]
+        UMINUSPLUS = 17,
+        [Lexeme(GenericToken.SugarToken, "!")]
+        EXCLAMATION = 18,
+        [Lexeme(GenericToken.SugarToken, "/")]
+        [Lexeme(GenericToken.SugarToken, "//")]
+        PATH = 19,
+        [Lexeme(GenericToken.SugarToken, "[")]
+        [Lexeme(GenericToken.SugarToken, "]")]
+        PREDICATE = 20,
+        [Lexeme(GenericToken.SugarToken, "?")]
+        PLOOKUP = 20,
+        [Lexeme(GenericToken.SugarToken, "?")]
+        ULOOKUP = 21,
+        [Lexeme(GenericToken.String)]
+        STRING,
+        [Lexeme(GenericToken.SugarToken, "*")]
+        [Lexeme(GenericToken.SugarToken, "+")]
+        [Lexeme(GenericToken.SugarToken, "?")]
+        OCCURRENCEINDICATOR,
+        [Lexeme(GenericToken.KeyWord, "child")]
+        [Lexeme(GenericToken.KeyWord, "descendant")]
+        [Lexeme(GenericToken.KeyWord, "attribute")]
+        [Lexeme(GenericToken.KeyWord, "self")]
+        [Lexeme(GenericToken.KeyWord, "descendant-or-self")]
+        [Lexeme(GenericToken.KeyWord, "following-sibling")]
+        [Lexeme(GenericToken.KeyWord, "following")]
+        [Lexeme(GenericToken.KeyWord, "namespace")]
+        FWDAXIS,
+        [Lexeme(GenericToken.KeyWord, "parent")]
+        [Lexeme(GenericToken.KeyWord, "ancestor")]
+        [Lexeme(GenericToken.KeyWord, "preceding-sibling")]
+        [Lexeme(GenericToken.KeyWord, "preceding")]
+        [Lexeme(GenericToken.KeyWord, "ancestor-or-self")]
+        RVEAXIS,
+        EOF
     }
 }
