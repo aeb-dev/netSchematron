@@ -25,18 +25,18 @@ namespace netSchematron
         [Lexeme(GenericToken.KeyWord, "le")]
         [Lexeme(GenericToken.KeyWord, "gt")]
         [Lexeme(GenericToken.KeyWord, "ge")]
-        VCOMP = 5,
+        VALUECOMPARATOR = 5,
         [Lexeme(GenericToken.SugarToken, "=")]
         [Lexeme(GenericToken.SugarToken, "!=")]
         [Lexeme(GenericToken.SugarToken, "<")]
         [Lexeme(GenericToken.SugarToken, "<=")]
         [Lexeme(GenericToken.SugarToken, ">")]
         [Lexeme(GenericToken.SugarToken, ">=")]
-        GCOMP = 5,
+        GENERALCOMPARATOR = 5,
         [Lexeme(GenericToken.KeyWord, "is")]
         [Lexeme(GenericToken.SugarToken, "<<")]
         [Lexeme(GenericToken.SugarToken, ">>")]
-        NCOMP = 5,
+        NODECOMPARATOR = 5,
         [Lexeme(GenericToken.SugarToken, "||")]
         CONCAT = 6,
         [Lexeme(GenericToken.KeyWord, "to")]
@@ -69,23 +69,41 @@ namespace netSchematron
         [Lexeme(GenericToken.SugarToken, "-")]
         UMINUSPLUS = 17,
         [Lexeme(GenericToken.SugarToken, "!")]
-        EXCLAMATION = 18,
+        MAP = 18,
         [Lexeme(GenericToken.SugarToken, "/")]
-        [Lexeme(GenericToken.SugarToken, "//")]
         PATH = 19,
+        [Lexeme(GenericToken.SugarToken, "//")]
+        ALLPATH = 19,
         [Lexeme(GenericToken.SugarToken, "[")]
+        LPREDICATE = 20,
         [Lexeme(GenericToken.SugarToken, "]")]
-        PREDICATE = 20,
+        RPREDICATE = 20,
         [Lexeme(GenericToken.SugarToken, "?")]
         PLOOKUP = 20,
         [Lexeme(GenericToken.SugarToken, "?")]
         ULOOKUP = 21,
-        [Lexeme(GenericToken.String)]
-        STRING,
-        [Lexeme(GenericToken.SugarToken, "*")]
-        [Lexeme(GenericToken.SugarToken, "+")]
-        [Lexeme(GenericToken.SugarToken, "?")]
-        OCCURRENCEINDICATOR,
+        [Lexeme(GenericToken.KeyWord, "return")]
+        RETURN,
+        [Lexeme(GenericToken.SugarToken, "$")]
+        DOLAR,
+        [Lexeme(GenericToken.KeyWord, "in")]
+        IN,
+        [Lexeme(GenericToken.SugarToken, ":=")]
+        ASSIGN,
+        [Lexeme(GenericToken.KeyWord, "satisfies")]
+        SATISFIES,
+        [Lexeme(GenericToken.SugarToken, "(")]
+        LPARENTHESIS,
+        [Lexeme(GenericToken.SugarToken, ")")]
+        RPARENTHESIS,
+        [Lexeme(GenericToken.KeyWord, "then")]
+        THEN,
+        [Lexeme(GenericToken.KeyWord, "else")]
+        ELSE,
+        [Lexeme(GenericToken.KeyWord, "of")]
+        OF,
+        [Lexeme(GenericToken.KeyWord, "as")]
+        AS,
         [Lexeme(GenericToken.KeyWord, "child")]
         [Lexeme(GenericToken.KeyWord, "descendant")]
         [Lexeme(GenericToken.KeyWord, "attribute")]
@@ -101,6 +119,14 @@ namespace netSchematron
         [Lexeme(GenericToken.KeyWord, "preceding")]
         [Lexeme(GenericToken.KeyWord, "ancestor-or-self")]
         RVEAXIS,
+        [Lexeme(GenericToken.SugarToken, "::")]
+        DOUBLECOLON,
+        // [Lexeme(GenericToken.String)]
+        // STRING,
+        [Lexeme(GenericToken.SugarToken, "*")]
+        [Lexeme(GenericToken.SugarToken, "+")]
+        [Lexeme(GenericToken.SugarToken, "?")]
+        OCCURRENCEINDICATOR,
         EOF
     }
 }
