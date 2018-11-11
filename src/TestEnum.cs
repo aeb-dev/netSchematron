@@ -2,7 +2,7 @@ using sly.lexer;
 
 namespace netSchematron
 {
-    public enum Token
+    public enum TokenEnum
     {
         [Lexeme(GenericToken.SugarToken, ",")]
         COMMA = 1,
@@ -69,15 +69,15 @@ namespace netSchematron
         [Lexeme(GenericToken.SugarToken, "-")]
         UMINUSPLUS = 17,
         [Lexeme(GenericToken.SugarToken, "!")]
-        MAP = 18,
+        EXCLAMATION = 18,
         [Lexeme(GenericToken.SugarToken, "/")]
         PATH = 19,
         [Lexeme(GenericToken.SugarToken, "//")]
         ALLPATH = 19,
         [Lexeme(GenericToken.SugarToken, "[")]
-        LPREDICATE = 20,
+        LSQRBRACKET = 20,
         [Lexeme(GenericToken.SugarToken, "]")]
-        RPREDICATE = 20,
+        RSQRBRACKET = 20,
         [Lexeme(GenericToken.SugarToken, "?")]
         PLOOKUP = 20,
         [Lexeme(GenericToken.SugarToken, "?")]
@@ -119,14 +119,83 @@ namespace netSchematron
         [Lexeme(GenericToken.KeyWord, "preceding")]
         [Lexeme(GenericToken.KeyWord, "ancestor-or-self")]
         RVEAXIS,
+        [Lexeme(GenericToken.SugarToken, ":")]
+        COLON,
         [Lexeme(GenericToken.SugarToken, "::")]
         DOUBLECOLON,
-        // [Lexeme(GenericToken.String)]
-        // STRING,
+        [Lexeme(GenericToken.SugarToken, "@")]
+        AT,
+        [Lexeme(GenericToken.SugarToken, ".")]
+        DOT,
+        [Lexeme(GenericToken.SugarToken, "..")]
+        DOUBLEDOT,
         [Lexeme(GenericToken.SugarToken, "*")]
-        [Lexeme(GenericToken.SugarToken, "+")]
+        WILDCARD,
+        [Lexeme(GenericToken.SugarToken, ":*")]
+        COLONWILDCARD,
+        [Lexeme(GenericToken.SugarToken, "*:")]
+        WILDCARDCOLON,
+        [Lexeme(GenericToken.SugarToken, ".")]
+        CURRENTCONTEXT,
         [Lexeme(GenericToken.SugarToken, "?")]
-        OCCURRENCEINDICATOR,
-        EOF
+        ARGUMENTPLACEHOLDER,
+        [Lexeme(GenericToken.SugarToken, "#")]
+        SQUARE,
+        [Lexeme(GenericToken.KeyWord, "function")]
+        FUNCTION,
+        [Lexeme(GenericToken.KeyWord, "map")]
+        MAP,
+        [Lexeme(GenericToken.SugarToken, "{")]
+        LCURLYBRACKET,
+        [Lexeme(GenericToken.SugarToken, "}")]
+        RCURLYBRACKET,
+        [Lexeme(GenericToken.KeyWord, "array")]
+        ARRAY,
+        [Lexeme(GenericToken.KeyWord, "empty-sequence")]
+        EMPTYSEQUENCE,
+        [Lexeme(GenericToken.SugarToken, "?")]
+        ZEROORONE,
+        [Lexeme(GenericToken.SugarToken, "*")]
+        ZEROORMORE,
+        [Lexeme(GenericToken.SugarToken, "+")]
+        ONERORMORE,
+        [Lexeme(GenericToken.KeyWord, "Q")]
+        Q,
+        [Lexeme(GenericToken.KeyWord, "item")]
+        ITEM,
+        [Lexeme(GenericToken.KeyWord, "node")]
+        NODE,
+        [Lexeme(GenericToken.KeyWord, "document-node")]
+        DOCUMENTNODE,
+        [Lexeme(GenericToken.KeyWord, "text")]
+        TEXT,
+        [Lexeme(GenericToken.KeyWord, "comment")]
+        COMMENT,
+        [Lexeme(GenericToken.KeyWord, "namespace-node")]
+        NAMESPACENODE,
+        [Lexeme(GenericToken.KeyWord, "processing-instruction")]
+        PROCESSINGINSTRUCTION,
+        [Lexeme(GenericToken.KeyWord, "attribute")]
+        ATTRIBUTE,
+        [Lexeme(GenericToken.KeyWord, "schema-attribute")]
+        SCHEMAATTRIBUTE,
+        [Lexeme(GenericToken.KeyWord, "element")]
+        ELEMENT,
+        [Lexeme(GenericToken.KeyWord, "schema-element")]
+        SCHEMAELEMENT,
+        [Lexeme(GenericToken.String)]
+        STRING,
+        [Lexeme(GenericToken.Int)]
+        INTEGER,
+        [Lexeme(GenericToken.Double)]
+        DOUBLE,
+        // [Lexeme("[^{}]*")]
+        // BRACEDURILITERAL,
+        [Lexeme(GenericToken.SugarToken, "(:")]
+        LCOMMENT,
+        [Lexeme(GenericToken.SugarToken, ":)")]
+        RCOMMENT,
+        // [Lexeme(GenericToken.Default)]
+        // EOF
     }
 }

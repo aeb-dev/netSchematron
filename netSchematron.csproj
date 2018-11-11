@@ -6,7 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="sly" Version="2.2.3" />
+    <ProjectReference Include="C:/Users/MrMuMu/Desktop/csly-dev/sly/sly.csproj" />
   </ItemGroup>
+
+  <!-- <ItemGroup>
+    <PackageReference Include="sly" Version="2.2.3" />
+  </ItemGroup> -->
 
 </Project>
