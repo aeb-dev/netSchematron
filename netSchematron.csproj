@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="C:/Users/MrMuMu/Desktop/csly-dev/sly/sly.csproj" />
+    <ProjectReference Include="C:/Users/enes.bayraktar/Desktop/csly-dev/sly/sly.csproj" />
   </ItemGroup>
 
   <!-- <ItemGroup>

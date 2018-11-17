@@ -7,81 +7,84 @@ namespace netSchematron
         [Lexeme(GenericToken.SugarToken, ",")]
         COMMA = 1,
         [Lexeme(GenericToken.KeyWord, "for")]
-        FOR = 2,
+        FOR,
         [Lexeme(GenericToken.KeyWord, "let")]
-        LET = 2,
+        LET,
         [Lexeme(GenericToken.KeyWord, "some")]
         [Lexeme(GenericToken.KeyWord, "every")]
-        SOMEEVERY = 2,
+        SOMEEVERY,
         [Lexeme(GenericToken.KeyWord, "if")]
-        IF = 2,
+        IF,
         [Lexeme(GenericToken.KeyWord, "or")]
-        OR = 3,
+        OR,
         [Lexeme(GenericToken.KeyWord, "and")]
-        AND = 4,
+        AND,
         [Lexeme(GenericToken.KeyWord, "eq")]
         [Lexeme(GenericToken.KeyWord, "ne")]
         [Lexeme(GenericToken.KeyWord, "lt")]
         [Lexeme(GenericToken.KeyWord, "le")]
         [Lexeme(GenericToken.KeyWord, "gt")]
         [Lexeme(GenericToken.KeyWord, "ge")]
-        VALUECOMPARATOR = 5,
         [Lexeme(GenericToken.SugarToken, "=")]
         [Lexeme(GenericToken.SugarToken, "!=")]
         [Lexeme(GenericToken.SugarToken, "<")]
         [Lexeme(GenericToken.SugarToken, "<=")]
         [Lexeme(GenericToken.SugarToken, ">")]
         [Lexeme(GenericToken.SugarToken, ">=")]
-        GENERALCOMPARATOR = 5,
         [Lexeme(GenericToken.KeyWord, "is")]
         [Lexeme(GenericToken.SugarToken, "<<")]
         [Lexeme(GenericToken.SugarToken, ">>")]
-        NODECOMPARATOR = 5,
+        COMPARATOR,
         [Lexeme(GenericToken.SugarToken, "||")]
-        CONCAT = 6,
+        CONCAT,
         [Lexeme(GenericToken.KeyWord, "to")]
-        TO = 7,
-        [Lexeme(GenericToken.SugarToken, "+")]
+        TO,
         [Lexeme(GenericToken.SugarToken, "-")]
-        BMINUSPLUS = 8,
+        MINUS,
+        [Lexeme(GenericToken.SugarToken, "+")]
+        PLUS,
         [Lexeme(GenericToken.SugarToken, "*")]
+        STAR,
+        // [Lexeme(GenericToken.SugarToken, "*")]
         [Lexeme(GenericToken.KeyWord, "div")]
         [Lexeme(GenericToken.KeyWord, "idiv")]
         [Lexeme(GenericToken.KeyWord, "mod")]
-        MULTIPLICATIVE = 9,
+        MULTIPLICATIVE,
         [Lexeme(GenericToken.SugarToken, "|")]
         [Lexeme(GenericToken.KeyWord, "union")]
-        UNION = 10,
+        UNION,
         [Lexeme(GenericToken.KeyWord, "intersect")]
         [Lexeme(GenericToken.KeyWord, "except")]
-        INTERSECTEXCEPT = 11,
+        INTERSECTEXCEPT,
         [Lexeme(GenericToken.KeyWord, "instance")]
-        INSTANCE = 12,
+        INSTANCE,
         [Lexeme(GenericToken.KeyWord, "treat")]
-        TREAT = 13,
+        TREAT,
         [Lexeme(GenericToken.KeyWord, "castable")]
-        CASTABLE = 14,
+        CASTABLE,
         [Lexeme(GenericToken.KeyWord, "cast")]
-        CAST = 15,
+        CAST,
         [Lexeme(GenericToken.SugarToken, "=>")]
-        ARROW = 16,
-        [Lexeme(GenericToken.SugarToken, "+")]
-        [Lexeme(GenericToken.SugarToken, "-")]
-        UMINUSPLUS = 17,
+        ARROW,
+        // [Lexeme(GenericToken.SugarToken, "+")]
+        // [Lexeme(GenericToken.SugarToken, "-")]
+        // UMINUSPLUS,
         [Lexeme(GenericToken.SugarToken, "!")]
-        EXCLAMATION = 18,
+        EXCLAMATION,
         [Lexeme(GenericToken.SugarToken, "/")]
-        PATH = 19,
+        PATH,
         [Lexeme(GenericToken.SugarToken, "//")]
-        ALLPATH = 19,
+        ALLPATH,
         [Lexeme(GenericToken.SugarToken, "[")]
-        LSQRBRACKET = 20,
+        LSQRBRACKET,
         [Lexeme(GenericToken.SugarToken, "]")]
-        RSQRBRACKET = 20,
+        RSQRBRACKET,
         [Lexeme(GenericToken.SugarToken, "?")]
-        PLOOKUP = 20,
-        [Lexeme(GenericToken.SugarToken, "?")]
-        ULOOKUP = 21,
+        QUESTION,
+        // [Lexeme(GenericToken.SugarToken, "?")]
+        // PLOOKUP,
+        // [Lexeme(GenericToken.SugarToken, "?")]
+        // ULOOKUP,
         [Lexeme(GenericToken.KeyWord, "return")]
         RETURN,
         [Lexeme(GenericToken.SugarToken, "$")]
@@ -129,16 +132,14 @@ namespace netSchematron
         DOT,
         [Lexeme(GenericToken.SugarToken, "..")]
         DOUBLEDOT,
-        [Lexeme(GenericToken.SugarToken, "*")]
-        WILDCARD,
+        // [Lexeme(GenericToken.SugarToken, "*")]
+        // WILDCARD,
         [Lexeme(GenericToken.SugarToken, ":*")]
         COLONWILDCARD,
         [Lexeme(GenericToken.SugarToken, "*:")]
         WILDCARDCOLON,
-        [Lexeme(GenericToken.SugarToken, ".")]
-        CURRENTCONTEXT,
-        [Lexeme(GenericToken.SugarToken, "?")]
-        ARGUMENTPLACEHOLDER,
+        // [Lexeme(GenericToken.SugarToken, "?")]
+        // ARGUMENTPLACEHOLDER,
         [Lexeme(GenericToken.SugarToken, "#")]
         SQUARE,
         [Lexeme(GenericToken.KeyWord, "function")]
@@ -153,12 +154,12 @@ namespace netSchematron
         ARRAY,
         [Lexeme(GenericToken.KeyWord, "empty-sequence")]
         EMPTYSEQUENCE,
-        [Lexeme(GenericToken.SugarToken, "?")]
-        ZEROORONE,
-        [Lexeme(GenericToken.SugarToken, "*")]
-        ZEROORMORE,
-        [Lexeme(GenericToken.SugarToken, "+")]
-        ONERORMORE,
+        // [Lexeme(GenericToken.SugarToken, "?")]
+        // ZEROORONE,
+        // [Lexeme(GenericToken.SugarToken, "*")]
+        // ZEROORMORE,
+        // [Lexeme(GenericToken.SugarToken, "+")]
+        // ONERORMORE,
         [Lexeme(GenericToken.KeyWord, "Q")]
         Q,
         [Lexeme(GenericToken.KeyWord, "item")]
