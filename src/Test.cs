@@ -20,17 +20,17 @@ namespace netSchematron
             return expr;
         }
 
-        // [Production("ParamList: Param (COMMA [d] Param)*")]
-        // public int ParamList()
-        // {
-        //     return 5;
-        // }
+        [Production("ParamList: Param (COMMA [d] Param)*")]
+        public int ParamList(string param, List<Group<TokenEnum, string>> groupList)
+        {
+            return 5;
+        }
 
-        // [Production("Param: DOLAR [d] EQName TypeDeclaration?")]
-        // public int Param()
-        // {
-        //     return 5;
-        // }
+        [Production("Param: DOLAR [d] EQName TypeDeclaration?")]
+        public int Param(string eqName, ValueOption<string> optionalExpr)
+        {
+            return 5;
+        }
 
         [Production("FunctionBody: EnclosedExpr")]
         public int FunctionBody(string enclosedExpr)
@@ -66,9 +66,9 @@ namespace netSchematron
         // [Production("ExprSingle: QuantifiedExpr")]
         // [Production("ExprSingle: IfExpr")]
         [Production("ExprSingle: OrExpr")]
-        public string ExprSingle(string expr)
+        public string ExprSingle(string orExpr)
         {
-            return expr;
+            return orExpr;
         }
 
         // [Production("ForExpr: SimpleForClause RETURN [d] ExprSingle")]
@@ -77,7 +77,7 @@ namespace netSchematron
         //     return 5;
         // }
 
-        // [Production("SimpleForClause: SimpleForBinding (COMMA [d] SimpleForBinding)*")]
+        // [Production("SimpleForClause: FOR [d] SimpleForBinding (COMMA [d] SimpleForBinding)*")]
         // public int SimpleForClause()
         // {
         //     return 5;
@@ -195,6 +195,9 @@ namespace netSchematron
             return 5;
         }
 
+
+        // [Operation((int)TokenEnum.PLUS, Affix.InFix, Associativity.Right, 5)]
+        // [Operation((int)TokenEnum.MINUS, Affix.InFix, Associativity.Right, 5)]
         [Production("AdditiveExpr: MultiplicativeExpr (MINUS MultiplicativeExpr)*")]
         [Production("AdditiveExpr: MultiplicativeExpr (PLUS MultiplicativeExpr)*")]
         public int AdditiveExpr(string multiplicativeExpr, List<Group<TokenEnum, string>> list)
@@ -251,6 +254,8 @@ namespace netSchematron
             return 5;
         }
 
+        // [Operation((int)TokenEnum.PLUS, Affix.PreFix, Associativity.Left, 5)]
+        // [Operation((int)TokenEnum.MINUS, Affix.PreFix, Associativity.Left, 5)]
         [Production("UnaryExpr: MINUS* ValueExpr")]
         [Production("UnaryExpr: PLUS* ValueExpr")]
         public int UnaryExpr(List<TokenEnum> uMinusPlus, string valueExpr)
@@ -270,26 +275,21 @@ namespace netSchematron
             return 5;
         }
 
-        [Production("PathExpr: PATH RelativePathExpr?")]
-        public int PathExpr(Token<TokenEnum> token, ValueOption<string> option)
+        [Production("PathExpr: PATH [d] RelativePathExpr?")]
+        public int PathExpr(ValueOption<string> option)
         {
             return 5;
         }
 
-        [Production("PathExpr: ALLPATH RelativePathExpr")]
-        public int PathExpr(Token<TokenEnum> token, string relativePathExpr)
-        {
-            return 5;
-        }
-
+        [Production("PathExpr: ALLPATH [d] RelativePathExpr")]
         [Production("PathExpr: RelativePathExpr")]
         public int PathExpr(string relativePathExpr)
         {
             return 5;
         }
 
-        [Production("RelativePathExpr: StepExpr (PATH StepExpr)* RelativePathExpr?")]
-        [Production("RelativePathExpr: StepExpr (ALLPATH StepExpr)* RelativePathExpr?")]
+        [Production("RelativePathExpr: StepExpr (PATH StepExpr)*")]
+        [Production("RelativePathExpr: StepExpr (ALLPATH StepExpr)*")]
         public int RelativePathExpr(string stepExpr, List<Group<TokenEnum, string>> list, ValueOption<string> option)
         {
             return 5;
@@ -327,8 +327,8 @@ namespace netSchematron
             return 5;
         }
 
-        [Production("AbbrevForwardStep: AT [d] NodeTest")]
-        public int AbbrevForwardStep(string nodeTest)
+        [Production("AbbrevForwardStep: AT? NodeTest")]
+        public int AbbrevForwardStep(ValueOption<Token<TokenEnum>> optionalToken, string nodeTest)
         {
             return 5;
         }
@@ -454,17 +454,19 @@ namespace netSchematron
             return 5;
         }
 
-        [Production("Literal: NumbericLiteral")]
+        [Production("Literal: NumericLiteral")]
         [Production("Literal: StringLiteral")]
         public int Literal(string expr)
         {
             return 5;
         }
 
-        [Production("NumbericLiteral: IntegerLiteral")]
-        [Production("NumbericLiteral: DecimalLiteral")]
-        [Production("NumbericLiteral: DoubleLiteral")]
-        public int NumbericLiteral(string expr)
+
+        // [Operand]
+        [Production("NumericLiteral: IntegerLiteral")]
+        [Production("NumericLiteral: DecimalLiteral")]
+        [Production("NumericLiteral: DoubleLiteral")]
+        public int NumericLiteral(string expr)
         {
             return 5;
         }
@@ -592,17 +594,17 @@ namespace netSchematron
             return 5;
         }
 
-        [Production("SingleType: SimpleTypeName QUESTION? [d]")]
+        [Production("SingleType: SimpleTypeName QUESTION?")]
         public int SingleType(string simpleTypeName, ValueOption<Token<TokenEnum>> option)
         {
             return 5;
         }
 
-        // [Production("TypeDeclaration: AS [d] SequenceType")]
-        // public int TypeDeclaration()
-        // {
-        //     return 5;
-        // }
+        [Production("TypeDeclaration: AS [d] SequenceType")]
+        public int TypeDeclaration(string sequenceType)
+        {
+            return 5;
+        }
 
         [Production("SequenceType: EMPTYSEQUENCE [d] LPARENTHESIS [d] RPARENTHESIS [d]")]
         public int SequenceType()
@@ -616,13 +618,13 @@ namespace netSchematron
             return 5;
         }
 
-        // [Production("OccurrenceIndicator: ZEROORONE")]
-        // [Production("OccurrenceIndicator: ZEROORMORE")]
-        // [Production("OccurrenceIndicator: ONERORMORE")]
-        // public int OccurrenceIndicator()
-        // {
-        //     return 5;
-        // }
+        [Production("OccurrenceIndicator: QUESTION")]
+        [Production("OccurrenceIndicator: STAR")]
+        [Production("OccurrenceIndicator: PLUS")]
+        public int OccurrenceIndicator(Token<TokenEnum> token)
+        {
+            return 5;
+        }
 
         [Production("ItemType: KindTest")]
         [Production("ItemType: FunctionTest")]
@@ -724,7 +726,7 @@ namespace netSchematron
             return 5;
         }
 
-        [Production("SchemaAttributeTest: LPARENTHESIS [d] AttributeDeclaration RPARENTHESIS [d]")]
+        [Production("SchemaAttributeTest: SCHEMAATTRIBUTE [d] LPARENTHESIS [d] AttributeDeclaration RPARENTHESIS [d]")]
         public int SchemaAttributeTest(string attributeDeclaration)
         {
             return 5;
@@ -809,8 +811,8 @@ namespace netSchematron
             return 5;
         }
 
-        [Production("AnyFunctionTest: FUNCTION [d] LPARENTHESIS [d] STAR RPARENTHESIS [d]")]
-        public int AnyFunctionTest(Token<TokenEnum> token)
+        [Production("AnyFunctionTest: FUNCTION [d] LPARENTHESIS [d] STAR [d] RPARENTHESIS [d]")]
+        public int AnyFunctionTest()
         {
             return 5;
         }
@@ -834,8 +836,8 @@ namespace netSchematron
             return 5;
         }
 
-        [Production("AnyMapTest: MAP [d] LPARENTHESIS [d] STAR RPARENTHESIS [d]")]
-        public int AnyMapTest(Token<TokenEnum> token)
+        [Production("AnyMapTest: MAP [d] LPARENTHESIS [d] STAR [d] RPARENTHESIS [d]")]
+        public int AnyMapTest()
         {
             return 5;
         }
