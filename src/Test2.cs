@@ -125,7 +125,7 @@ namespace netSchematron
         }
 
 // works if true
-#if false
+#if true
         [Production("ArrowExpr: ValueExpr")]
         public string ArrowExpr(string unaryExpr)
         {
