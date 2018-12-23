@@ -20,7 +20,7 @@ namespace netSchematron
             BuildResult<Parser<TokenEnum, string>> buildResult = builder.BuildParser(test, ParserType.EBNF_LL_RECURSIVE_DESCENT, "XPath");
 
             Parser<TokenEnum, string> parser = buildResult.Result;
-            ParseResult<TokenEnum, string> parseResult = parser.Parse("2 + 2");
+            ParseResult<TokenEnum, string> parseResult = parser.Parse("2-2", "XPath");
 
             // Console.WriteLine("Hello World!");
         }
