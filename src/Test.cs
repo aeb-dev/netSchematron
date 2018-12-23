@@ -4,6 +4,7 @@ using System.Text;
 using sly.lexer;
 using sly.parser.generator;
 using sly.parser.parser;
+using System.Linq;
 
 namespace netSchematron
 {
@@ -45,7 +46,7 @@ namespace netSchematron
         // }
 
         [Production("Expr: ExprSingle")]
-        public string Expr(string exprSingle, List<Group<TokenEnum, string>> groupList)
+        public string Expr(string exprSingle)
         {
             // StringBuilder result = new StringBuilder(exprSingle);
 
@@ -158,9 +159,9 @@ namespace netSchematron
 
         // [Production("ComparisonExpr: StringConcatExpr (ValueComp StringConcatExpr)?")]
         // [Operation((int)TokenEnum.COMPARATOR, Affix.PostFix, Associativity.Right, (int)TokenEnum.COMPARATOR)]
-        [Production("ComparisonExpr: StringConcatExpr")]
+        [Production("ComparisonExpr: StringConcatExpr (COMPARATOR StringConcatExpr)?")]
         // [Production("ComparisonExpr: StringConcatExpr (NodeComp StringConcatExpr)?")]
-        public string ComparisonExpr(string stringConcatExpr, ValueOption<string> optionalGroup)
+        public string ComparisonExpr(string stringConcatExpr)
         {
             // string result;
             // if (optionalGroup.IsSome)
@@ -198,83 +199,112 @@ namespace netSchematron
             return additiveExpr;
         }
 
-        [Production("AdditiveExpr: MultiplicativeExpr (MINUS MultiplicativeExpr)*")]
-        [Production("AdditiveExpr: MultiplicativeExpr (PLUS MultiplicativeExpr)*")]
+        [Production("AdditiveExpr: MultiplicativeExpr (MinusOrPlusExpr MultiplicativeExpr)*")]
         public string AdditiveExpr(string multiplicativeExpr, List<Group<TokenEnum, string>> groupList)
         {
-            return multiplicativeExpr;
+            string result = multiplicativeExpr;
+            foreach (Group<TokenEnum, string> group in groupList)
+            {
+                result += group.Value(0);
+                result += group.Value(1);
+            }
+            return result;
         }
 
-        [Production("MultiplicativeExpr: UnionExpr")]
-        [Production("MultiplicativeExpr: UnionExpr")]
-        public string MultiplicativeExpr(string unionExpr, List<Group<TokenEnum, string>> groupList)
+        [Production("MinusOrPlusExpr: MINUS")]
+        [Production("MinusOrPlusExpr: PLUS")]
+        public string MinusOrPlusExpr(Token<TokenEnum> token)
         {
-            return unionExpr;
+            return token.Value;
+        }
+
+        [Production("MultiplicativeExpr: UnionExpr (MultiplicativeOperatorExpr UnionExpr)*")]
+        public object MultiplicativeExpr(object unionExpr, List<Group<TokenEnum, string>> list)
+        {
+            return 5;
+        }
+
+        [Production("MultiplicativeExpr: MULTIPLICATIVE")]
+        [Production("MultiplicativeExpr: STAR")]
+        public string MultiplicativeOperatorExpr(Token<TokenEnum> token)
+        {
+            return token.Value;
         }
 
         [Production("UnionExpr: IntersectExceptExpr")]
-        public string UnionExpr(string intersectExceptExpr)
+        public object UnionExpr(object intersectExceptExpr)
         {
             return intersectExceptExpr;
         }
 
         [Production("IntersectExceptExpr: InstanceofExpr")]
-        public string IntersectExceptExpr(string instanceOfExpr)
+        public object IntersectExceptExpr(object instanceOfExpr)
         {
             return instanceOfExpr;
         }
 
         [Production("InstanceofExpr: TreatExpr")]
-        public string InstanceofExpr(string treatExpr)
+        public object InstanceofExpr(object treatExpr)
         {
             return treatExpr;
         }
 
         [Production("TreatExpr: CastableExpr")]
-        public string TreatExpr(string castableExpr)
+        public object TreatExpr(object castableExpr)
         {
             return castableExpr;
         }
 
         [Production("CastableExpr: CastExpr")]
-        public string CastableExpr(string castExpr)
+        public object CastableExpr(object castExpr)
         {
             return castExpr;
         }
 
         [Production("CastExpr: ArrowExpr")]
-        public string CastExpr(string arrowExpr)
+        public object CastExpr(object arrowExpr)
         {
             return arrowExpr;
         }
 
-        [Production("ArrowExpr: UnaryExpr")]
-        public string ArrowExpr(string unaryExpr)
+        [Production("ArrowExpr: ValueExpr")]
+        public object ArrowExpr(object unaryExpr)
         {
             return unaryExpr;
         }
 
-        [Production("UnaryExpr: UnaryExprExtra* ValueExpr")]
-        public string UnaryExpr(List<string> uMinusPlus, string valueExpr)
-        {
-            return $"{uMinusPlus[0]}{valueExpr}";
-        }
+        // [Production("UnaryExpr: MinusOrPlusExpr* ValueExpr")]
+        // public string UnaryExpr(List<string> uMinusPlus, string valueExpr)
+        // {
+        //     string result = String.Empty;
+        //     int minusCount = uMinusPlus.Count(x => x == "-");
+        //     if (minusCount % 2 == 0)
+        //     {
+        //         result += $"+{valueExpr}";
+        //     }
+        //     else
+        //     {
+        //         result += $"-{valueExpr}";
+        //     }
 
-        [Production("UnaryExprExtra: MINUS")]
-        [Production("UnaryExprExtra: PLUS")]
-        public string UnaryExprExtra(Token<TokenEnum> token)
-        {
-            return token.Value;
-        }
+        //     return result;
+        // }
+
+        // [Production("UnaryExprExtra: MINUS")]
+        // [Production("UnaryExprExtra: PLUS")]
+        // public string UnaryExprExtra(Token<TokenEnum> token)
+        // {
+        //     return token.Value;
+        // }
 
         [Production("ValueExpr: SimpleMapExpr")]
-        public string ValueExpr(string simpleMapExpr)
+        public object ValueExpr(object simpleMapExpr)
         {
             return simpleMapExpr;
         }
 
         [Production("SimpleMapExpr: PathExpr")]
-        public string SimpleMapExpr(string pathExpr)
+        public object SimpleMapExpr(object pathExpr)
         {
             return pathExpr;
         }
@@ -287,21 +317,21 @@ namespace netSchematron
 
         // [Production("PathExpr: ALLPATH [d] RelativePathExpr")]
         [Production("PathExpr: RelativePathExpr")]
-        public string PathExpr(string relativePathExpr)
+        public object PathExpr(object relativePathExpr)
         {
             return relativePathExpr;
         }
 
         [Production("RelativePathExpr: StepExpr")]
         // [Production("RelativePathExpr: StepExpr (ALLPATH StepExpr)*")]
-        public string RelativePathExpr(string stepExpr)
+        public object RelativePathExpr(object stepExpr)
         {
             return stepExpr;
         }
 
         [Production("StepExpr: PostfixExpr")]
         // [Production("StepExpr: AxisStep")]
-        public string StepExpr(string expr)
+        public object StepExpr(object expr)
         {
             return expr;
         }
@@ -386,7 +416,7 @@ namespace netSchematron
         [Production("PostfixExpr: PrimaryExpr")]
         // [Production("PostfixExpr: PrimaryExpr ArgumentList*")]
         // [Production("PostfixExpr: PrimaryExpr Lookup*")]
-        public string PostfixExpr(string primaryExpr)
+        public object PostfixExpr(object primaryExpr)
         {
             return primaryExpr;
         }
@@ -453,14 +483,14 @@ namespace netSchematron
         // [Production("PrimaryExpr: MapConstructor")]
         // [Production("PrimaryExpr: ArrayConstructor")]
         // [Production("PrimaryExpr: UnaryLookup")]
-        public string PrimaryExpr(string expr)
+        public object PrimaryExpr(object expr)
         {
             return expr;
         }
 
         [Production("Literal: NumericLiteral")]
-        // [Production("Literal: StringLiteral")]
-        public string Literal(string expr)
+        [Production("Literal: StringLiteral")]
+        public object Literal(object expr)
         {
             return expr;
         }
@@ -468,7 +498,7 @@ namespace netSchematron
         [Production("NumericLiteral: IntegerLiteral")]
         [Production("NumericLiteral: DecimalLiteral")]
         [Production("NumericLiteral: DoubleLiteral")]
-        public string NumericLiteral(string expr)
+        public object NumericLiteral(object expr)
         {
             return expr;
         }
@@ -486,9 +516,9 @@ namespace netSchematron
         // }
 
         [Production("ParenthesizedExpr: LPARENTHESIS [d] Expr? RPARENTHESIS [d]")]
-        public string ParenthesizedExpr(ValueOption<string> option)
+        public object ParenthesizedExpr(ValueOption<object> option)
         {
-            var gg = option.Match((expr) => $"({expr})", () => "()");
+            var gg = option.Match((expr) => expr, null);
             return gg;
         }
 
@@ -795,17 +825,17 @@ namespace netSchematron
         //     return 5;
         // }
 
-        [Production("SimpleTypeName: TypeName")]
-        public int SimpleTypeName(string typeName)
-        {
-            return 5;
-        }
+        // [Production("SimpleTypeName: TypeName")]
+        // public int SimpleTypeName(string typeName)
+        // {
+        //     return 5;
+        // }
 
-        [Production("TypeName: EQName")]
-        public int TypeName(string eqName)
-        {
-            return 5;
-        }
+        // [Production("TypeName: EQName")]
+        // public int TypeName(string eqName)
+        // {
+        //     return 5;
+        // }
 
         // [Production("FunctionTest: AnyFunctionTest")]
         // [Production("FunctionTest: TypedFunctionTest")]
@@ -877,58 +907,57 @@ namespace netSchematron
         //     return itemType;
         // }
 
-        [Production("EQName: QName")]
-        [Production("EQName: URIQualifiedName")]
-        public string EQName(string expr)
-        {
-            return expr;
-        }
+        // [Production("EQName: QName")]
+        // [Production("EQName: URIQualifiedName")]
+        // public string EQName(string expr)
+        // {
+        //     return expr;
+        // }
 
         // [Operand]
         [Production("IntegerLiteral: INTEGER")]
-        public string IntegerLiteral(Token<TokenEnum> token)
+        public object IntegerLiteral(Token<TokenEnum> token)
         {
-            return token.Value;
+            return token.IntValue;
         }
 
         [Production("DecimalLiteral: DOT [d] INTEGER")]
-        public string DecimalLiteral(Token<TokenEnum> token)
+        public object DecimalLiteral(Token<TokenEnum> token)
         {
-            return token.Value;
+            return Decimal.Parse(token.Value);
         }
 
         [Production("DecimalLiteral: INTEGER DOT [d] INTEGER*")] // INETEGER* migth not work here!
-        public string DecimalLiteral(Token<TokenEnum> token, List<Token<TokenEnum>> list)
+        public object DecimalLiteral(Token<TokenEnum> token, List<Token<TokenEnum>> list)
         {
-            return token.Value;
+            return Decimal.Parse(token.Value);
         }
 
         // [Operand]
         [Production("DoubleLiteral: DOUBLE")]
-        public string DoubleLiteral(Token<TokenEnum> token)
+        public object DoubleLiteral(Token<TokenEnum> token)
+        {
+            return token.DoubleValue;
+        }
+
+        [Production("StringLiteral: STRING")]
+        public object StringLiteral(Token<TokenEnum> token)
         {
             return token.Value;
         }
 
-        // [Operand]
-        // [Production("StringLiteral: STRING")]
-        // public string StringLiteral(Token<TokenEnum> token)
+        // [Production("URIQualifiedName: BracedURILiteral NCName")]
+        // public int URIQualifiedName(string bacedUriLiteral, string ncName)
+        // {
+        //     return 5;
+        // }
+
+        // // [Operand]
+        // [Production("BracedURILiteral: Q [d] LCURLYBRACKET [d] STRING RCURLYBRACKET [d]")]
+        // public string BracedURILiteral(Token<TokenEnum> token)
         // {
         //     return token.Value;
         // }
-
-        [Production("URIQualifiedName: BracedURILiteral NCName")]
-        public int URIQualifiedName(string bacedUriLiteral, string ncName)
-        {
-            return 5;
-        }
-
-        // [Operand]
-        [Production("BracedURILiteral: Q [d] LCURLYBRACKET [d] STRING RCURLYBRACKET [d]")]
-        public string BracedURILiteral(Token<TokenEnum> token)
-        {
-            return token.Value;
-        }
 
         // [Production("Comment: LCOMMENT [d] CommentContents* RCOMMENT [d]")]
         // [Production("Comment: LCOMMENT [d] Comment* RCOMMENT [d]")]
@@ -938,18 +967,18 @@ namespace netSchematron
         // }
 
         // [Operand]
-        [Production("QName: STRING")]
-        public string QName(Token<TokenEnum> token)
-        {
-            return token.Value;
-        }
+        // [Production("QName: STRING")]
+        // public string QName(Token<TokenEnum> token)
+        // {
+        //     return token.Value;
+        // }
 
         // [Operand]
-        [Production("NCName: STRING")]
-        public string NCName(Token<TokenEnum> token)
-        {
-            return token.Value;
-        }
+        // [Production("NCName: STRING")]
+        // public string NCName(Token<TokenEnum> token)
+        // {
+        //     return token.Value;
+        // }
 
         // [Production("Char: STRING")]
         // public int Char()
