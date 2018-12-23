@@ -15,12 +15,13 @@ namespace netSchematron
                 Console.WriteLine((int)enumm);
             }
 
-            var test = new Test();
+            var test = new Test2();
             var builder = new ParserBuilder<TokenEnum, string>();
             BuildResult<Parser<TokenEnum, string>> buildResult = builder.BuildParser(test, ParserType.EBNF_LL_RECURSIVE_DESCENT, "XPath");
 
             Parser<TokenEnum, string> parser = buildResult.Result;
-            ParseResult<TokenEnum, string> parseResult = parser.Parse("2-2", "XPath");
+            ParseResult<TokenEnum, string> parseResult = parser.Parse("1-2-(3+4)", "XPath");
+            // ParseResult<TokenEnum, string> parseResult = parser.Parse("-----2+1", "XPath");
 
             // Console.WriteLine("Hello World!");
         }
