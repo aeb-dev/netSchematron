@@ -143,13 +143,18 @@ namespace netSchematron
         {
             string result = String.Empty;
             int minusCount = uMinusPlus.Count(x => x == "-");
-            if (minusCount % 2 == 0)
-            {
-                result += $"+{valueExpr}";
+			if (minusCount != 0) {
+                if (minusCount % 2 == 0)
+                {
+                    result += $"+{valueExpr}";
+                }
+                else
+                {
+                    result += $"-{valueExpr}";
+                }
             }
-            else
-            {
-                result += $"-{valueExpr}";
+            else {
+            result += valueExpr;
             }
 
             return result;
