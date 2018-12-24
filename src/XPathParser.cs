@@ -1,10 +1,9 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
 using sly.lexer;
 using sly.parser.generator;
 using sly.parser.parser;
 using System.Linq;
+using System;
 
 namespace netSchematron
 {
@@ -133,12 +132,16 @@ namespace netSchematron
             return comparisonExpr;
         }
 
-        [Production("ComparisonExpr: StringConcatExpr (COMPARATOR StringConcatExpr)?")]
-        public object ComparisonExpr(object stringConcatExpr, ValueOption<Group<XPathToken, object>> optionalGroup)
+        // [Production("ComparisonExpr: StringConcatExpr (COMPARATOR StringConcatExpr)?")]
+        // public object ComparisonExpr(object stringConcatExpr, ValueOption<Group<XPathToken, object>> optionalGroup)
+        [Production("ComparisonExpr: StringConcatExpr (COMPARATOR StringConcatExpr)*")]
+        public object ComparisonExpr(object stringConcatExpr, List<Group<XPathToken, object>> exprList)
         {
-            if (optionalGroup.IsSome)
+            if (exprList.Count > 1) throw new Exception("a value option clause is simulated with list, therefore 0 or 1 occurence is permitted");
+
+            if (exprList.Any())
             {
-                // optionalGroup.Match()
+
             }
 
             return stringConcatExpr;
@@ -157,10 +160,12 @@ namespace netSchematron
 
         // [Production("RangeExpr: AdditiveExpr (TO [d] AdditiveExpr)?")]
         // public object RangeExpr(object additiveExpr, ValueOption<object> optionalExpr)
-        [Production("RangeExpr: AdditiveExpr (TO [d] AdditiveExpr)?")]
-        public object RangeExpr(object additiveExpr, ValueOption<Group<XPathToken, object>> optionalGroup)
+        [Production("RangeExpr: AdditiveExpr (TO [d] AdditiveExpr)*")]
+        public object RangeExpr(object additiveExpr, List<Group<XPathToken, object>> exprList)
         {
-            if (optionalGroup.IsSome)
+            if (exprList.Count > 1) throw new Exception("a value option clause is simulated with list, therefore 0 or 1 occurence is permitted");
+
+            if (exprList.Any())
             {
 
             }
@@ -171,7 +176,6 @@ namespace netSchematron
         [Production("AdditiveExpr: MultiplicativeExpr (MinusOrPlusExpr MultiplicativeExpr)*")]
         public object AdditiveExpr(object multiplicativeExpr, List<Group<XPathToken, object>> groupList)
         {
-            object result;
             if (groupList.Any())
             {
                 foreach (Group<XPathToken, object> group in groupList)
@@ -181,47 +185,33 @@ namespace netSchematron
                     {
                         case XPathToken.MINUS:
                         {
-                            if (multiplicativeExpr is decimal)
+                            if (multiplicativeExpr is decimal || value is decimal)
                             {
-                                multiplicativeExpr = (decimal)multiplicativeExpr - (decimal)value;
+                                multiplicativeExpr = Convert.ToDecimal(multiplicativeExpr) - Convert.ToDecimal(value);
                             }
-                            else if (multiplicativeExpr is double)
+                            else if (multiplicativeExpr is int || value is int)
                             {
-                                multiplicativeExpr = (double)multiplicativeExpr - (double)value;
-                            }
-                            else if (multiplicativeExpr is int)
-                            {
-                                multiplicativeExpr = (int)multiplicativeExpr - (int)value;
+                                multiplicativeExpr = Convert.ToInt32(multiplicativeExpr) - Convert.ToInt32(value);
                             }
                             break;
                         }
                         case XPathToken.PLUS:
                         {
-                            if (multiplicativeExpr is decimal)
+                            if (multiplicativeExpr is decimal || value is decimal)
                             {
-                                multiplicativeExpr = (decimal)multiplicativeExpr + (decimal)value;
+                                multiplicativeExpr = Convert.ToDecimal(multiplicativeExpr) + Convert.ToDecimal(value);
                             }
-                            else if (multiplicativeExpr is double)
+                            else if (multiplicativeExpr is int || value is int)
                             {
-                                multiplicativeExpr = (double)multiplicativeExpr + (double)value;
-                            }
-                            else if (multiplicativeExpr is int)
-                            {
-                                multiplicativeExpr = (int)multiplicativeExpr + (int)value;
+                                multiplicativeExpr = Convert.ToInt32(multiplicativeExpr) + Convert.ToInt32(value);
                             }
                             break;
                         }
                     }
                 }
-
-                result = multiplicativeExpr;
-            }
-            else
-            {
-                result = multiplicativeExpr;
             }
 
-            return result;
+            return multiplicativeExpr;
         }
 
         [Production("MinusOrPlusExpr: MINUS")]
@@ -236,17 +226,65 @@ namespace netSchematron
         {
             if (groupList.Any())
             {
-
-            }
-            else
-            {
-
+                foreach (Group<XPathToken, object> group in groupList)
+                {
+                    object value = group.Value(1);
+                    switch (group.Value(0))
+                    {
+                        case XPathToken.STAR:
+                        {
+                            if (unionExpr is decimal || value is decimal)
+                            {
+                                unionExpr = Convert.ToDecimal(unionExpr) * Convert.ToDecimal(value);
+                            }
+                            else if (unionExpr is int || value is int)
+                            {
+                                unionExpr = Convert.ToInt32(unionExpr) * Convert.ToInt32(value);
+                            }
+                            break;
+                        }
+                        case XPathToken.DIV:
+                        {
+                            if (unionExpr is decimal || value is decimal)
+                            {
+                                unionExpr = Convert.ToDecimal(unionExpr) / Convert.ToDecimal(value);
+                            }
+                            break;
+                        }
+                        case XPathToken.IDIV:
+                        {
+                            if (unionExpr is decimal || value is decimal)
+                            {
+                                unionExpr = Convert.ToInt32((Convert.ToDecimal(unionExpr) / Convert.ToDecimal(value)));
+                            }
+                            else if (unionExpr is int || value is int)
+                            {
+                                unionExpr = Convert.ToInt32((Convert.ToInt32(unionExpr) / Convert.ToInt32(value)));
+                            }
+                            break;
+                        }
+                        case XPathToken.MOD:
+                        {
+                            if (unionExpr is decimal || value is decimal)
+                            {
+                                unionExpr = Convert.ToDecimal(unionExpr) % Convert.ToDecimal(value);
+                            }
+                            else if (unionExpr is int || value is int)
+                            {
+                                unionExpr = Convert.ToInt32(unionExpr) % Convert.ToInt32(value);
+                            }
+                            break;
+                        }
+                    }
+                }
             }
 
             return unionExpr;
         }
 
-        [Production("MultiplicativeOperatorExpr: MULTIPLICATIVE")]
+        [Production("MultiplicativeOperatorExpr: DIV")]
+        [Production("MultiplicativeOperatorExpr: MOD")]
+        [Production("MultiplicativeOperatorExpr: IDIV")]
         [Production("MultiplicativeOperatorExpr: STAR")]
         public XPathToken MultiplicativeOperatorExpr(Token<XPathToken> token)
         {
@@ -313,10 +351,6 @@ namespace netSchematron
                 if (valueExpr is decimal)
                 {
                     valueExpr = -(decimal)valueExpr;
-                }
-                else if (valueExpr is double)
-                {
-                    valueExpr = -(double)valueExpr;
                 }
                 else if (valueExpr is int)
                 {
@@ -462,10 +496,14 @@ namespace netSchematron
             return expr;
         }
 
-        [Production("ArgumentList: LPARENTHESIS [d] (Argument ExtraArgumentList)? RPARENTHESIS [d]")]
-        public object ArgumentList(ValueOption<Group<XPathToken, object>> optionalGroup)
+        // [Production("ArgumentList: LPARENTHESIS [d] (Argument ExtraArgumentList)? RPARENTHESIS [d]")]
+        // public object ArgumentList(ValueOption<Group<XPathToken, object>> optionalGroup)
+        [Production("ArgumentList: LPARENTHESIS [d] (Argument ExtraArgumentList)* RPARENTHESIS [d]")]
+        public object ArgumentList(List<Group<XPathToken, object>> exprList)
         {
-            if (optionalGroup.IsSome)
+            if (exprList.Count > 1) throw new Exception("a value option clause is simulated with list, therefore 0 or 1 occurence is permitted");
+
+            if (exprList.Any())
             {
                 // optionalGroup.Match()
             }
@@ -548,7 +586,7 @@ namespace netSchematron
         }
 
         [Production("NumericLiteral: IntegerLiteral")]
-        // [Production("NumericLiteral: DecimalLiteral")]
+        [Production("NumericLiteral: DecimalLiteral")]
         [Production("NumericLiteral: DoubleLiteral")]
         public object NumericLiteral(object expr)
         {
@@ -978,22 +1016,23 @@ namespace netSchematron
             return token.IntValue;
         }
 
-        // [Production("DecimalLiteral: DOT [d] INTEGER")]
-        // public object DecimalLiteral(Token<XPathToken> token)
-        // {
-        //     return Decimal.Parse(token.Value);
-        // }
+        [Production("DecimalLiteral: DOT [d] INTEGER")]
+        public decimal DecimalLiteral(Token<XPathToken> token)
+        {
+            return Decimal.Parse($".{token.Value}");
+        }
 
-        // [Production("DecimalLiteral: INTEGER DOT [d] INTEGER*")] // INETEGER* migth not work here!
-        // public object DecimalLiteral(Token<XPathToken> token, List<Token<XPathToken>> list)
-        // {
-        //     return Decimal.Parse(token.Value);
-        // }
+        [Production("DecimalLiteral: INTEGER DOT [d] INTEGER*")] // INETEGER* migth not work here!
+        public decimal DecimalLiteral(Token<XPathToken> token, List<Token<XPathToken>> list)
+        {
+            string afterDot = list.Any() ? list[0].Value : String.Empty;
+            return Decimal.Parse($"{token.Value}.{afterDot}");
+        }
 
         [Production("DoubleLiteral: DOUBLE")]
-        public double DoubleLiteral(Token<XPathToken> token)
+        public decimal DoubleLiteral(Token<XPathToken> token)
         {
-            return token.DoubleValue;
+            return Decimal.Parse(token.Value);
         }
 
         [Production("StringLiteral: STRING")]

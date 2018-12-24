@@ -45,11 +45,12 @@ namespace netSchematron
         PLUS,
         [Lexeme(GenericToken.SugarToken, "*")]
         STAR,
-        // [Lexeme(GenericToken.SugarToken, "*")]
         [Lexeme(GenericToken.KeyWord, "div")]
+        DIV,
         [Lexeme(GenericToken.KeyWord, "idiv")]
+        IDIV,
         [Lexeme(GenericToken.KeyWord, "mod")]
-        MULTIPLICATIVE,
+        MOD,
         [Lexeme(GenericToken.SugarToken, "|")]
         [Lexeme(GenericToken.KeyWord, "union")]
         UNION,
@@ -66,9 +67,6 @@ namespace netSchematron
         CAST,
         [Lexeme(GenericToken.SugarToken, "=>")]
         ARROW,
-        // [Lexeme(GenericToken.SugarToken, "+")]
-        // [Lexeme(GenericToken.SugarToken, "-")]
-        // UMINUSPLUS,
         [Lexeme(GenericToken.SugarToken, "!")]
         EXCLAMATION,
         [Lexeme(GenericToken.SugarToken, "/")]
@@ -81,10 +79,6 @@ namespace netSchematron
         RSQRBRACKET,
         [Lexeme(GenericToken.SugarToken, "?")]
         QUESTION,
-        // [Lexeme(GenericToken.SugarToken, "?")]
-        // PLOOKUP,
-        // [Lexeme(GenericToken.SugarToken, "?")]
-        // ULOOKUP,
         [Lexeme(GenericToken.KeyWord, "return")]
         RETURN,
         [Lexeme(GenericToken.SugarToken, "$")]
@@ -132,14 +126,10 @@ namespace netSchematron
         DOT,
         [Lexeme(GenericToken.SugarToken, "..")]
         DOUBLEDOT,
-        // [Lexeme(GenericToken.SugarToken, "*")]
-        // WILDCARD,
         [Lexeme(GenericToken.SugarToken, ":*")]
         COLONWILDCARD,
         [Lexeme(GenericToken.SugarToken, "*:")]
         WILDCARDCOLON,
-        // [Lexeme(GenericToken.SugarToken, "?")]
-        // ARGUMENTPLACEHOLDER,
         [Lexeme(GenericToken.SugarToken, "#")]
         SQUARE,
         [Lexeme(GenericToken.KeyWord, "function")]
@@ -154,12 +144,6 @@ namespace netSchematron
         ARRAY,
         [Lexeme(GenericToken.KeyWord, "empty-sequence")]
         EMPTYSEQUENCE,
-        // [Lexeme(GenericToken.SugarToken, "?")]
-        // ZEROORONE,
-        // [Lexeme(GenericToken.SugarToken, "*")]
-        // ZEROORMORE,
-        // [Lexeme(GenericToken.SugarToken, "+")]
-        // ONERORMORE,
         [Lexeme(GenericToken.KeyWord, "Q")]
         Q,
         [Lexeme(GenericToken.KeyWord, "item")]
