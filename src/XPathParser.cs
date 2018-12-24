@@ -8,21 +8,21 @@ using System.Linq;
 
 namespace netSchematron
 {
-    public class Test
+    public class XPathParser
     {
-        public Test()
+        public XPathParser()
         {
 
         }
 
         [Production("XPath: Expr")]
-        public string XPath(string expr)
+        public object XPath(object expr)
         {
             return expr;
         }
 
         // [Production("ParamList: Param (COMMA [d] Param)*")]
-        // public int ParamList(string param, List<Group<TokenEnum, string>> groupList)
+        // public int ParamList(string param, List<Group<XPathToken, string>> groupList)
         // {
         //     return 5;
         // }
@@ -45,21 +45,11 @@ namespace netSchematron
         //     return 5;
         // }
 
+        // [Production("Expr: ExprSingle (COMMA [d] ExprSingle)*")]
+        // public object Expr(object exprSingle, List<object> exprList)
         [Production("Expr: ExprSingle")]
-        public string Expr(string exprSingle)
+        public object Expr(object exprSingle)
         {
-            // StringBuilder result = new StringBuilder(exprSingle);
-
-            // foreach (Group<TokenEnum, string> group in groupList)
-            // {
-            //     foreach (GroupItem<TokenEnum, string> item in group.Items)
-            //     {
-            //         result.Append(",");
-            //         result.Append(item.Token.Value);
-            //     }
-            // }
-
-            // return result.ToString();
             return exprSingle;
         }
 
@@ -68,7 +58,7 @@ namespace netSchematron
         // [Production("ExprSingle: QuantifiedExpr")]
         // [Production("ExprSingle: IfExpr")]
         [Production("ExprSingle: OrExpr")]
-        public string ExprSingle(string orExpr)
+        public object ExprSingle(object orExpr)
         {
             return orExpr;
         }
@@ -121,114 +111,144 @@ namespace netSchematron
         //     return 5;
         // }
 
-        [Production("OrExpr: AndExpr")]
-        public string OrExpr(string andExpr)
+        [Production("OrExpr: AndExpr (OR [d] AndExpr)*")]
+        public object OrExpr(object andExpr, List<Group<XPathToken, object>> exprList)
         {
-            // StringBuilder result = new StringBuilder(andExpr);
+            if (exprList.Any())
+            {
 
-            // foreach (Group<TokenEnum, string> group in groupList)
-            // {
-            //     foreach (GroupItem<TokenEnum, string> item in group.Items)
-            //     {
-            //         result.Append("or");
-            //         result.Append(item.Value);
-            //     }
-            // }
-
-            // return result.ToString();
+            }
             return andExpr;
         }
 
-        [Production("AndExpr: ComparisonExpr")]
-        public string AndExpr(string comparisonExpr)
+        [Production("AndExpr: ComparisonExpr (AND [d] ComparisonExpr)*")]
+        public object AndExpr(object comparisonExpr, List<Group<XPathToken, object>> exprList)
         {
-            // StringBuilder result = new StringBuilder(comparisonExpr);
+            if (exprList.Any())
+            {
 
-            // foreach (Group<TokenEnum, string> group in groupList)
-            // {
-            //     foreach (GroupItem<TokenEnum, string> item in group.Items)
-            //     {
-            //         result.Append("and");
-            //         result.Append(item.Value);
-            //     }
-            // }
-
-            // return result.ToString();
+            }
             return comparisonExpr;
         }
 
-        // [Production("ComparisonExpr: StringConcatExpr (ValueComp StringConcatExpr)?")]
-        // [Operation((int)TokenEnum.COMPARATOR, Affix.PostFix, Associativity.Right, (int)TokenEnum.COMPARATOR)]
         [Production("ComparisonExpr: StringConcatExpr (COMPARATOR StringConcatExpr)?")]
-        // [Production("ComparisonExpr: StringConcatExpr (NodeComp StringConcatExpr)?")]
-        public string ComparisonExpr(string stringConcatExpr)
+        public object ComparisonExpr(object stringConcatExpr, ValueOption<object> optionalGroup)
         {
-            // string result;
-            // if (optionalGroup.IsSome)
-            // {
-            //     optionalGroup.Match(
-            //         (group) =>
-            //         {
-            //             switch (group.Value(0))
-            //             {
-            //                 case "a":
-            //                 {
-            //                     break;
-            //                 }
-            //             }
+            if (optionalGroup.IsSome)
+            {
 
-            //             return group;
-            //         },
-            //         null
-            //     );
-            // }
+            }
 
             return stringConcatExpr;
         }
 
         // [Operand]
-        [Production("StringConcatExpr: RangeExpr")]
-        public string StringConcatExpr(string rangeExpr)
+        [Production("StringConcatExpr: RangeExpr (CONCAT [d] RangeExpr)*")]
+        public object StringConcatExpr(object rangeExpr, List<Group<XPathToken, object>> exprList)
         {
+            if (exprList.Any())
+            {
+
+            }
+
             return rangeExpr;
         }
 
-        [Production("RangeExpr: AdditiveExpr")]
-        public string RangeExpr(string additiveExpr)
+        // [Production("RangeExpr: AdditiveExpr (TO [d] AdditiveExpr)?")]
+        // public object RangeExpr(object additiveExpr, ValueOption<object> optionalExpr)
+        [Production("RangeExpr: AdditiveExpr (TO [d] AdditiveExpr)?")]
+        public object RangeExpr(object additiveExpr, ValueOption<Group<XPathToken, object>> optionalGroup)
         {
+            if (optionalGroup.IsSome)
+            {
+
+            }
+
             return additiveExpr;
         }
 
         [Production("AdditiveExpr: MultiplicativeExpr (MinusOrPlusExpr MultiplicativeExpr)*")]
-        public string AdditiveExpr(string multiplicativeExpr, List<Group<TokenEnum, string>> groupList)
+        public object AdditiveExpr(object multiplicativeExpr, List<Group<XPathToken, object>> groupList)
         {
-            string result = multiplicativeExpr;
-            foreach (Group<TokenEnum, string> group in groupList)
+            object result;
+            if (groupList.Any())
             {
-                result += group.Value(0);
-                result += group.Value(1);
+                foreach (Group<XPathToken, object> group in groupList)
+                {
+                    object value = group.Value(1);
+                    switch (group.Value(0))
+                    {
+                        case XPathToken.MINUS:
+                        {
+                            if (multiplicativeExpr is decimal)
+                            {
+                                multiplicativeExpr = (decimal)multiplicativeExpr - (decimal)value;
+                            }
+                            else if (multiplicativeExpr is double)
+                            {
+                                multiplicativeExpr = (double)multiplicativeExpr - (double)value;
+                            }
+                            else if (multiplicativeExpr is int)
+                            {
+                                multiplicativeExpr = (int)multiplicativeExpr - (int)value;
+                            }
+                            break;
+                        }
+                        case XPathToken.PLUS:
+                        {
+                            if (multiplicativeExpr is decimal)
+                            {
+                                multiplicativeExpr = (decimal)multiplicativeExpr + (decimal)value;
+                            }
+                            else if (multiplicativeExpr is double)
+                            {
+                                multiplicativeExpr = (double)multiplicativeExpr + (double)value;
+                            }
+                            else if (multiplicativeExpr is int)
+                            {
+                                multiplicativeExpr = (int)multiplicativeExpr + (int)value;
+                            }
+                            break;
+                        }
+                    }
+                }
+
+                result = multiplicativeExpr;
             }
+            else
+            {
+                result = multiplicativeExpr;
+            }
+
             return result;
         }
 
         [Production("MinusOrPlusExpr: MINUS")]
         [Production("MinusOrPlusExpr: PLUS")]
-        public string MinusOrPlusExpr(Token<TokenEnum> token)
+        public XPathToken MinusOrPlusExpr(Token<XPathToken> token)
         {
-            return token.Value;
+            return token.TokenID;
         }
 
         [Production("MultiplicativeExpr: UnionExpr (MultiplicativeOperatorExpr UnionExpr)*")]
-        public object MultiplicativeExpr(object unionExpr, List<Group<TokenEnum, string>> list)
+        public object MultiplicativeExpr(object unionExpr, List<Group<XPathToken, object>> groupList)
         {
-            return 5;
+            if (groupList.Any())
+            {
+
+            }
+            else
+            {
+
+            }
+            return unionExpr;
         }
 
         [Production("MultiplicativeExpr: MULTIPLICATIVE")]
         [Production("MultiplicativeExpr: STAR")]
-        public string MultiplicativeOperatorExpr(Token<TokenEnum> token)
+        public XPathToken MultiplicativeOperatorExpr(Token<XPathToken> token)
         {
-            return token.Value;
+            return token.TokenID;
         }
 
         [Production("UnionExpr: IntersectExceptExpr")]
@@ -267,35 +287,43 @@ namespace netSchematron
             return arrowExpr;
         }
 
-        [Production("ArrowExpr: ValueExpr")]
+        [Production("ArrowExpr: UnaryExpr")]
         public object ArrowExpr(object unaryExpr)
         {
             return unaryExpr;
         }
 
-        // [Production("UnaryExpr: MinusOrPlusExpr* ValueExpr")]
-        // public string UnaryExpr(List<string> uMinusPlus, string valueExpr)
-        // {
-        //     string result = String.Empty;
-        //     int minusCount = uMinusPlus.Count(x => x == "-");
-        //     if (minusCount % 2 == 0)
-        //     {
-        //         result += $"+{valueExpr}";
-        //     }
-        //     else
-        //     {
-        //         result += $"-{valueExpr}";
-        //     }
+        [Production("UnaryExpr: MinusOrPlusExpr* ValueExpr")]
+        public object UnaryExpr(List<object> uMinusPlus, object valueExpr)
+        {
+            bool isNegative = false;
+            if (uMinusPlus.Any())
+            {
+                int minusCount = uMinusPlus.Count(x => (XPathToken)x == XPathToken.MINUS);
+                if (minusCount % 2 != 0)
+                {
+                    isNegative = true;
+                }
+            }
 
-        //     return result;
-        // }
+            if (isNegative)
+            {
+                if (valueExpr is decimal)
+                {
+                    valueExpr = -(decimal)valueExpr;
+                }
+                else if (valueExpr is double)
+                {
+                    valueExpr = -(double)valueExpr;
+                }
+                else if (valueExpr is int)
+                {
+                    valueExpr = -(int)valueExpr;
+                }
+            }
 
-        // [Production("UnaryExprExtra: MINUS")]
-        // [Production("UnaryExprExtra: PLUS")]
-        // public string UnaryExprExtra(Token<TokenEnum> token)
-        // {
-        //     return token.Value;
-        // }
+            return valueExpr;
+        }
 
         [Production("ValueExpr: SimpleMapExpr")]
         public object ValueExpr(object simpleMapExpr)
@@ -356,13 +384,13 @@ namespace netSchematron
         // }
 
         // [Production("ForwardAxis: FWDAXIS DOUBLECOLON [d]")]
-        // public int ForwardAxis(Token<TokenEnum> token)
+        // public int ForwardAxis(Token<XPathToken> token)
         // {
         //     return 5;
         // }
 
         // [Production("AbbrevForwardStep: AT? NodeTest")]
-        // public int AbbrevForwardStep(ValueOption<Token<TokenEnum>> optionalToken, string nodeTest)
+        // public int AbbrevForwardStep(ValueOption<Token<XPathToken>> optionalToken, string nodeTest)
         // {
         //     return 5;
         // }
@@ -380,7 +408,7 @@ namespace netSchematron
         // }
 
         // [Production("ReverseAxis: RVEAXIS DOUBLECOLON [d]")]
-        // public int ReverseAxis(Token<TokenEnum> token)
+        // public int ReverseAxis(Token<XPathToken> token)
         // {
         //     return 5;
         // }
@@ -422,13 +450,13 @@ namespace netSchematron
         }
 
         // [Production("ArgumentList: LPARENTHESIS [d] (Argument ExtraArgumentList)? RPARENTHESIS [d]")]
-        // public int ArgumentList(ValueOption<GroupItem<TokenEnum, string>> option)
+        // public int ArgumentList(ValueOption<GroupItem<XPathToken, string>> option)
         // {
         //     return 5;
         // }
 
         // [Production("ExtraArgumentList: (COMMA [d] Argument)*")]
-        // public int ExtraArgumentList(List<Group<TokenEnum, string>> list)
+        // public int ExtraArgumentList(List<Group<XPathToken, string>> list)
         // {
         //     return 5;
         // }
@@ -496,7 +524,7 @@ namespace netSchematron
         }
 
         [Production("NumericLiteral: IntegerLiteral")]
-        [Production("NumericLiteral: DecimalLiteral")]
+        // [Production("NumericLiteral: DecimalLiteral")]
         [Production("NumericLiteral: DoubleLiteral")]
         public object NumericLiteral(object expr)
         {
@@ -518,8 +546,13 @@ namespace netSchematron
         [Production("ParenthesizedExpr: LPARENTHESIS [d] Expr? RPARENTHESIS [d]")]
         public object ParenthesizedExpr(ValueOption<object> option)
         {
-            var gg = option.Match((expr) => expr, null);
-            return gg;
+            object result = null;
+            if (option.IsSome)
+            {
+                result = option.Match((expr) => expr, null);
+            }
+
+            return result;
         }
 
         // [Production("ContextItemExpr: DOT [d]")]
@@ -561,19 +594,19 @@ namespace netSchematron
         // }
 
         // [Production("InlineFunctionExpr: FUNCTION [d] LPARENTHESIS [d] ParamList? RPARENTHESIS [d] (AS [d] SequenceType)? FunctionBody")]
-        // public int InlineFunctionExpr(ValueOption<string> option_first, ValueOption<Group<TokenEnum, string>> option_second, string functionBody)
+        // public int InlineFunctionExpr(ValueOption<string> option_first, ValueOption<Group<XPathToken, string>> option_second, string functionBody)
         // {
         //     return 5;
         // }
 
         // [Production("MapConstructor: MAP [d] LCURLYBRACKET [d] (MapConstructorEntry ExtraMapConstructor)? RCURLYBRACKET [d]")]
-        // public int MapConstructor(ValueOption<Group<TokenEnum, string>> option)
+        // public int MapConstructor(ValueOption<Group<XPathToken, string>> option)
         // {
         //     return 5;
         // }
 
         // [Production("ExtraMapConstructor: (COMMA [d] MapConstructorEntry)*")]
-        // public int ExtraMapConstructor(List<Group<TokenEnum, string>> list)
+        // public int ExtraMapConstructor(List<Group<XPathToken, string>> list)
         // {
         //     return 5;
         // }
@@ -604,13 +637,13 @@ namespace netSchematron
         // }
 
         // [Production("SquareArrayConstructor: LSQRBRACKET [d] (ExprSingle ExtraSquareArrayConstructor)? RSQRBRACKET [d]")]
-        // public int SquareArrayConstructor(ValueOption<Group<TokenEnum, string>> option)
+        // public int SquareArrayConstructor(ValueOption<Group<XPathToken, string>> option)
         // {
         //     return 5;
         // }
 
         // [Production("ExtraSquareArrayConstructor: (COMMA [d] ExprSingle)*")]
-        // public int ExtraSquareArrayConstructor(List<Group<TokenEnum, string>> list)
+        // public int ExtraSquareArrayConstructor(List<Group<XPathToken, string>> list)
         // {
         //     return 5;
         // }
@@ -628,7 +661,7 @@ namespace netSchematron
         // }
 
         // [Production("SingleType: SimpleTypeName QUESTION?")]
-        // public int SingleType(string simpleTypeName, ValueOption<Token<TokenEnum>> option)
+        // public int SingleType(string simpleTypeName, ValueOption<Token<XPathToken>> option)
         // {
         //     return 5;
         // }
@@ -654,7 +687,7 @@ namespace netSchematron
         // [Production("OccurrenceIndicator: QUESTION")]
         // [Production("OccurrenceIndicator: STAR")]
         // [Production("OccurrenceIndicator: PLUS")]
-        // public int OccurrenceIndicator(Token<TokenEnum> token)
+        // public int OccurrenceIndicator(Token<XPathToken> token)
         // {
         //     return 5;
         // }
@@ -736,13 +769,13 @@ namespace netSchematron
         // }
 
         // [Production("AttributeTest: ATTRIBUTE [d] LPARENTHESIS [d] (AttributeNameOrWildcard ExtraAttributeTest)? RPARENTHESIS [d]")]
-        // public int AttributeTest(ValueOption<Group<TokenEnum, string>> option)
+        // public int AttributeTest(ValueOption<Group<XPathToken, string>> option)
         // {
         //     return 5;
         // }
 
         // [Production("ExtraAttributeTest: (COMMA [d] TypeName)?")]
-        // public int ExtraAttributeTest(ValueOption<Group<TokenEnum, string>> option)
+        // public int ExtraAttributeTest(ValueOption<Group<XPathToken, string>> option)
         // {
         //     return 5;
         // }
@@ -772,19 +805,19 @@ namespace netSchematron
         // }
 
         // [Production("ElementTest: ELEMENT [d] LPARENTHESIS [d] (ElementNameOrWildcard ExtraElementTest)? RPARENTHESIS [d]")]
-        // public int ElementTest(ValueOption<Group<TokenEnum, string>> option)
+        // public int ElementTest(ValueOption<Group<XPathToken, string>> option)
         // {
         //     return 5;
         // }
 
         // [Production("ExtraElementTest: (COMMA [d] TypeName ZeroOrOne)?")]
-        // public int ExtraElementTest(ValueOption<Group<TokenEnum, string>> option)
+        // public int ExtraElementTest(ValueOption<Group<XPathToken, string>> option)
         // {
         //     return 5;
         // }
 
         // [Production("ZeroOrOne: QUESTION?")]
-        // public int ZeroOrOne(ValueOption<Token<TokenEnum>> option)
+        // public int ZeroOrOne(ValueOption<Token<XPathToken>> option)
         // {
         //     return 5;
         // }
@@ -851,13 +884,13 @@ namespace netSchematron
         // }
 
         // [Production("TypedFunctionTest: FUNCTION [d] LPARENTHESIS [d] (SequenceType ExtraTypedFunctionTest)? RPARENTHESIS [d] AS [d] SequenceType")]
-        // public int TypedFunctionTest(ValueOption<Group<TokenEnum, string>> option, string sequenceType)
+        // public int TypedFunctionTest(ValueOption<Group<XPathToken, string>> option, string sequenceType)
         // {
         //     return 5;
         // }
 
         // [Production("ExtraTypedFunctionTest: (COMMA [d] SequenceType)*")]
-        // public int ExtraTypedFunctionTest(List<Group<TokenEnum, string>> list)
+        // public int ExtraTypedFunctionTest(List<Group<XPathToken, string>> list)
         // {
         //     return 5;
         // }
@@ -889,7 +922,7 @@ namespace netSchematron
         // }
 
         // [Production("AnyArrayTest: ARRAY [d] LPARENTHESIS [d] STAR RPARENTHESIS [d]")]
-        // public int AnyArrayTest(Token<TokenEnum> token)
+        // public int AnyArrayTest(Token<XPathToken> token)
         // {
         //     return 5;
         // }
@@ -916,32 +949,31 @@ namespace netSchematron
 
         // [Operand]
         [Production("IntegerLiteral: INTEGER")]
-        public object IntegerLiteral(Token<TokenEnum> token)
+        public int IntegerLiteral(Token<XPathToken> token)
         {
             return token.IntValue;
         }
 
-        [Production("DecimalLiteral: DOT [d] INTEGER")]
-        public object DecimalLiteral(Token<TokenEnum> token)
-        {
-            return Decimal.Parse(token.Value);
-        }
+        // [Production("DecimalLiteral: DOT [d] INTEGER")]
+        // public object DecimalLiteral(Token<XPathToken> token)
+        // {
+        //     return Decimal.Parse(token.Value);
+        // }
 
-        [Production("DecimalLiteral: INTEGER DOT [d] INTEGER*")] // INETEGER* migth not work here!
-        public object DecimalLiteral(Token<TokenEnum> token, List<Token<TokenEnum>> list)
-        {
-            return Decimal.Parse(token.Value);
-        }
+        // [Production("DecimalLiteral: INTEGER DOT [d] INTEGER*")] // INETEGER* migth not work here!
+        // public object DecimalLiteral(Token<XPathToken> token, List<Token<XPathToken>> list)
+        // {
+        //     return Decimal.Parse(token.Value);
+        // }
 
-        // [Operand]
         [Production("DoubleLiteral: DOUBLE")]
-        public object DoubleLiteral(Token<TokenEnum> token)
+        public double DoubleLiteral(Token<XPathToken> token)
         {
             return token.DoubleValue;
         }
 
         [Production("StringLiteral: STRING")]
-        public object StringLiteral(Token<TokenEnum> token)
+        public string StringLiteral(Token<XPathToken> token)
         {
             return token.Value;
         }
@@ -954,7 +986,7 @@ namespace netSchematron
 
         // // [Operand]
         // [Production("BracedURILiteral: Q [d] LCURLYBRACKET [d] STRING RCURLYBRACKET [d]")]
-        // public string BracedURILiteral(Token<TokenEnum> token)
+        // public string BracedURILiteral(Token<XPathToken> token)
         // {
         //     return token.Value;
         // }
@@ -968,14 +1000,14 @@ namespace netSchematron
 
         // [Operand]
         // [Production("QName: STRING")]
-        // public string QName(Token<TokenEnum> token)
+        // public string QName(Token<XPathToken> token)
         // {
         //     return token.Value;
         // }
 
         // [Operand]
         // [Production("NCName: STRING")]
-        // public string NCName(Token<TokenEnum> token)
+        // public string NCName(Token<XPathToken> token)
         // {
         //     return token.Value;
         // }

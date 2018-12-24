@@ -10,20 +10,12 @@ namespace netSchematron
     {
         static void Main(string[] args)
         {
-            foreach (TokenEnum enumm in (TokenEnum[]) Enum.GetValues(typeof(TokenEnum)))
-            {
-                Console.WriteLine((int)enumm);
-            }
+            var xpathParser = new XPathParser();
+            var builder = new ParserBuilder<XPathToken, object>();
+            BuildResult<Parser<XPathToken, object>> buildResult = builder.BuildParser(xpathParser, ParserType.EBNF_LL_RECURSIVE_DESCENT, "XPath");
 
-            var test = new Test2();
-            var builder = new ParserBuilder<TokenEnum, string>();
-            BuildResult<Parser<TokenEnum, string>> buildResult = builder.BuildParser(test, ParserType.EBNF_LL_RECURSIVE_DESCENT, "XPath");
-
-            Parser<TokenEnum, string> parser = buildResult.Result;
-            ParseResult<TokenEnum, string> parseResult = parser.Parse("1-2-(3+4)", "XPath");
-            // ParseResult<TokenEnum, string> parseResult = parser.Parse("-----2+1", "XPath");
-
-            // Console.WriteLine("Hello World!");
+            Parser<XPathToken, object> parser = buildResult.Result;
+            ParseResult<XPathToken, object> parseResult = parser.Parse("---1-2----((3--2)++(-4+3))", "XPath");
         }
     }
 }

@@ -2,7 +2,7 @@ using sly.lexer;
 
 namespace netSchematron
 {
-    public enum TokenEnum
+    public enum XPathToken
     {
         [Lexeme(GenericToken.SugarToken, ",")]
         COMMA = 1,
