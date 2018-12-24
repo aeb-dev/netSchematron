@@ -184,6 +184,8 @@ namespace netSchematron
         ELEMENT,
         [Lexeme(GenericToken.KeyWord, "schema-element")]
         SCHEMAELEMENT,
+        [Lexeme(GenericToken.Default)]
+        DEFAULT,
         [Lexeme(GenericToken.String)]
         STRING,
         [Lexeme(GenericToken.Int)]

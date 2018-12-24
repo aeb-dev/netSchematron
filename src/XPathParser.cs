@@ -118,6 +118,7 @@ namespace netSchematron
             {
 
             }
+
             return andExpr;
         }
 
@@ -128,21 +129,21 @@ namespace netSchematron
             {
 
             }
+
             return comparisonExpr;
         }
 
         [Production("ComparisonExpr: StringConcatExpr (COMPARATOR StringConcatExpr)?")]
-        public object ComparisonExpr(object stringConcatExpr, ValueOption<object> optionalGroup)
+        public object ComparisonExpr(object stringConcatExpr, ValueOption<Group<XPathToken, object>> optionalGroup)
         {
             if (optionalGroup.IsSome)
             {
-
+                // optionalGroup.Match()
             }
 
             return stringConcatExpr;
         }
 
-        // [Operand]
         [Production("StringConcatExpr: RangeExpr (CONCAT [d] RangeExpr)*")]
         public object StringConcatExpr(object rangeExpr, List<Group<XPathToken, object>> exprList)
         {
@@ -241,11 +242,12 @@ namespace netSchematron
             {
 
             }
+
             return unionExpr;
         }
 
-        [Production("MultiplicativeExpr: MULTIPLICATIVE")]
-        [Production("MultiplicativeExpr: STAR")]
+        [Production("MultiplicativeOperatorExpr: MULTIPLICATIVE")]
+        [Production("MultiplicativeOperatorExpr: STAR")]
         public XPathToken MultiplicativeOperatorExpr(Token<XPathToken> token)
         {
             return token.TokenID;
@@ -441,25 +443,47 @@ namespace netSchematron
         //     return 5;
         // }
 
-        [Production("PostfixExpr: PrimaryExpr")]
-        // [Production("PostfixExpr: PrimaryExpr ArgumentList*")]
-        // [Production("PostfixExpr: PrimaryExpr Lookup*")]
-        public object PostfixExpr(object primaryExpr)
+        [Production("PostfixExpr: PrimaryExpr PredicateOrArgumentListOrLookupExpr*")]
+        public object PostfixExpr(object primaryExpr, List<object> exprList)
         {
+            if (exprList.Any())
+            {
+
+            }
+
             return primaryExpr;
         }
 
-        // [Production("ArgumentList: LPARENTHESIS [d] (Argument ExtraArgumentList)? RPARENTHESIS [d]")]
-        // public int ArgumentList(ValueOption<GroupItem<XPathToken, string>> option)
-        // {
-        //     return 5;
-        // }
+        [Production("PredicateOrArgumentListOrLookupExpr: Predicate")]
+        [Production("PredicateOrArgumentListOrLookupExpr: ArgumentList")]
+        // [Production("PredicateOrArgumentListOrLookupExpr: Lookup")]
+        public object PredicateOrArgumentListOrLookupExpr(object expr)
+        {
+            return expr;
+        }
 
-        // [Production("ExtraArgumentList: (COMMA [d] Argument)*")]
-        // public int ExtraArgumentList(List<Group<XPathToken, string>> list)
-        // {
-        //     return 5;
-        // }
+        [Production("ArgumentList: LPARENTHESIS [d] (Argument ExtraArgumentList)? RPARENTHESIS [d]")]
+        public object ArgumentList(ValueOption<Group<XPathToken, object>> optionalGroup)
+        {
+            if (optionalGroup.IsSome)
+            {
+                // optionalGroup.Match()
+            }
+
+            return 5;
+        }
+
+        [Production("ExtraArgumentList: (COMMA [d] Argument)*")]
+        public object ExtraArgumentList(List<Group<XPathToken, object>> groupList)
+        {
+            var argumentList = new List<object>();
+            foreach (Group<XPathToken, object> group in groupList)
+            {
+                argumentList.Add(group.Value(0));
+            }
+
+            return argumentList;
+        }
 
         // [Production("PredicateList: Predicate*")]
         // public int PredicateList(List<string> list)
@@ -467,11 +491,11 @@ namespace netSchematron
         //     return 5;
         // }
 
-        // [Production("Predicate: LSQRBRACKET [d] Expr RSQRBRACKET [d]")]
-        // public int Predicate(string expr)
-        // {
-        //     return 5;
-        // }
+        [Production("Predicate: LSQRBRACKET [d] Expr RSQRBRACKET [d]")]
+        public object Predicate(object expr)
+        {
+            return expr;
+        }
 
         // [Production("Lookup: QUESTION [d] KeySpecifier")]
         // public int Lookup(string keySpecifier)
@@ -506,7 +530,7 @@ namespace netSchematron
         // [Production("PrimaryExpr: VarRef")]
         [Production("PrimaryExpr: ParenthesizedExpr")]
         // [Production("PrimaryExpr: ContextItemExpr")]
-        // [Production("PrimaryExpr: FunctionCall")]
+        [Production("PrimaryExpr: FunctionCall")]
         // [Production("PrimaryExpr: FunctionItemExpr")]
         // [Production("PrimaryExpr: MapConstructor")]
         // [Production("PrimaryExpr: ArrayConstructor")]
@@ -561,18 +585,18 @@ namespace netSchematron
         //     return ".";
         // }
 
-        // [Production("FunctionCall: EQName ArgumentList")]
-        // public int FunctionCall(string eqName, string argumentList)
-        // {
-        //     return 5;
-        // }
+        [Production("FunctionCall: EQName ArgumentList")]
+        public object FunctionCall(string eqName, object argumentList)
+        {
+            return XPathReservedFunction.FunctionList[eqName](argumentList);
+        }
 
-        // [Production("Argument: ExprSingle")]
+        [Production("Argument: ExprSingle")]
         // [Production("Argument: ArgumentPlaceholder")]
-        // public int Argument(string expr)
-        // {
-        //     return 5;
-        // }
+        public object Argument(object expr)
+        {
+            return expr;
+        }
 
         // [Production("ArgumentPlaceholder: QUESTION [d]")]
         // public string ArgumentPlaceholder()
@@ -940,12 +964,12 @@ namespace netSchematron
         //     return itemType;
         // }
 
-        // [Production("EQName: QName")]
+        [Production("EQName: QName")]
         // [Production("EQName: URIQualifiedName")]
-        // public string EQName(string expr)
-        // {
-        //     return expr;
-        // }
+        public string EQName(string expr)
+        {
+            return expr;
+        }
 
         // [Operand]
         [Production("IntegerLiteral: INTEGER")]
@@ -998,12 +1022,11 @@ namespace netSchematron
         //     return 5;
         // }
 
-        // [Operand]
-        // [Production("QName: STRING")]
-        // public string QName(Token<XPathToken> token)
-        // {
-        //     return token.Value;
-        // }
+        [Production("QName: DEFAULT")]
+        public string QName(Token<XPathToken> token)
+        {
+            return token.Value;
+        }
 
         // [Operand]
         // [Production("NCName: STRING")]
