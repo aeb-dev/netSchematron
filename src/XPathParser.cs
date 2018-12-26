@@ -134,15 +134,15 @@ namespace netSchematron
 
         // [Production("ComparisonExpr: StringConcatExpr (COMPARATOR StringConcatExpr)?")]
         // public object ComparisonExpr(object stringConcatExpr, ValueOption<Group<XPathToken, object>> optionalGroup)
-        [Production("ComparisonExpr: StringConcatExpr (COMPARATOR StringConcatExpr)*")]
-        public object ComparisonExpr(object stringConcatExpr, List<Group<XPathToken, object>> exprList)
+        [Production("ComparisonExpr: StringConcatExpr (COMPARATOR StringConcatExpr)?")]
+        public object ComparisonExpr(object stringConcatExpr, ValueOption<Group<XPathToken, object>> exprList)
         {
-            if (exprList.Count > 1) throw new Exception("a value option clause is simulated with list, therefore 0 or 1 occurence is permitted");
+            // if (exprList.Count > 1) throw new Exception("a value option clause is simulated with list, therefore 0 or 1 occurence is permitted");
 
-            if (exprList.Any())
-            {
+            // if (exprList.Any())
+            // {
 
-            }
+            // }
 
             return stringConcatExpr;
         }
