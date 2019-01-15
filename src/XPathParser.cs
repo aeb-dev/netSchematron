@@ -4,12 +4,13 @@ using sly.parser.generator;
 using sly.parser.parser;
 using System.Linq;
 using System;
+using System.Xml;
 
 namespace netSchematron
 {
     public class XPathParser
     {
-        public XPathParser()
+        public XPathParser(XmlDocument document)
         {
 
         }
@@ -134,12 +135,12 @@ namespace netSchematron
 
         // [Production("ComparisonExpr: StringConcatExpr (COMPARATOR StringConcatExpr)?")]
         // public object ComparisonExpr(object stringConcatExpr, ValueOption<Group<XPathToken, object>> optionalGroup)
-        [Production("ComparisonExpr: StringConcatExpr (COMPARATOR StringConcatExpr)*")]
-        public object ComparisonExpr(object stringConcatExpr, List<Group<XPathToken, object>> exprList)
+        [Production("ComparisonExpr: StringConcatExpr (COMPARATOR StringConcatExpr)?")]
+        public object ComparisonExpr(object stringConcatExpr, ValueOption<Group<XPathToken, object>> exprList)
         {
-            if (exprList.Count > 1) throw new Exception("a value option clause is simulated with list, therefore 0 or 1 occurence is permitted");
+            // if (exprList.Count > 1) throw new Exception("a value option clause is simulated with list, therefore 0 or 1 occurence is permitted");
 
-            if (exprList.Any())
+            if (exprList.IsSome)
             {
 
             }
@@ -160,12 +161,12 @@ namespace netSchematron
 
         // [Production("RangeExpr: AdditiveExpr (TO [d] AdditiveExpr)?")]
         // public object RangeExpr(object additiveExpr, ValueOption<object> optionalExpr)
-        [Production("RangeExpr: AdditiveExpr (TO [d] AdditiveExpr)*")]
-        public object RangeExpr(object additiveExpr, List<Group<XPathToken, object>> exprList)
+        [Production("RangeExpr: AdditiveExpr (TO [d] AdditiveExpr)?")]
+        public object RangeExpr(object additiveExpr, ValueOption<Group<XPathToken, object>> exprList)
         {
-            if (exprList.Count > 1) throw new Exception("a value option clause is simulated with list, therefore 0 or 1 occurence is permitted");
+            // if (exprList.Count > 1) throw new Exception("a value option clause is simulated with list, therefore 0 or 1 occurence is permitted");
 
-            if (exprList.Any())
+            if (exprList.IsSome)
             {
 
             }
@@ -498,12 +499,12 @@ namespace netSchematron
 
         // [Production("ArgumentList: LPARENTHESIS [d] (Argument ExtraArgumentList)? RPARENTHESIS [d]")]
         // public object ArgumentList(ValueOption<Group<XPathToken, object>> optionalGroup)
-        [Production("ArgumentList: LPARENTHESIS [d] (Argument ExtraArgumentList)* RPARENTHESIS [d]")]
-        public object ArgumentList(List<Group<XPathToken, object>> exprList)
+        [Production("ArgumentList: LPARENTHESIS [d] (Argument ExtraArgumentList)? RPARENTHESIS [d]")]
+        public object ArgumentList(ValueOption<Group<XPathToken, object>> exprList)
         {
-            if (exprList.Count > 1) throw new Exception("a value option clause is simulated with list, therefore 0 or 1 occurence is permitted");
+            // if (exprList.Count > 1) throw new Exception("a value option clause is simulated with list, therefore 0 or 1 occurence is permitted");
 
-            if (exprList.Any())
+            if (exprList.IsSome)
             {
                 // optionalGroup.Match()
             }
