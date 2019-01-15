@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml;
 using sly.buildresult;
 using sly.lexer;
 using sly.parser;
@@ -10,7 +11,7 @@ namespace netSchematron
     {
         static void Main(string[] args)
         {
-            var xpathParser = new XPathParser();
+            var xpathParser = new XPathParser(new XmlDocument());
             var builder = new ParserBuilder<XPathToken, object>();
             BuildResult<Parser<XPathToken, object>> buildResult = builder.BuildParser(xpathParser, ParserType.EBNF_LL_RECURSIVE_DESCENT, "XPath");
 
